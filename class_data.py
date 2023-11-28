@@ -54,12 +54,12 @@ class civi:
         print(f"name is {self.name}, label is {self.label}, state is {self.state}")
 
 
-class matrix:
+class point:
     def __init__(self, _x: int, _y: int):
         self.x = _x  # 设定x、y
         self.y = _y
-        self.Mstate = 0  # 设定初始状态为-->0【未有居民居住】-->1【有公民居住】
-        self.Mcivi = civi()
+        self.Pstate = 0  # 设定初始状态为-->0【未有居民居住】-->1【有公民居住】
+        self.Pcivi = civi()
 
     def set_civi(self, civi_add: civi):
         """
@@ -68,12 +68,12 @@ class matrix:
         :return 成功则1，不成功则0
         """
 
-        if (self.Mstate == 0):  # 当入住成功
-            self.Mcivi = copy.copy(civi_add)  # 调用自定义copy函数对Mcivi进行初始化
-            if (self.Mcivi != 0):
-                self.Mstate = 1
-                print(f"success live in {self.x},{self.y}")
-                self.Mcivi.print_all()
+        if (self.Pstate == 0):  # 当入住成功
+            self.Pcivi = copy.copy(civi_add)  # 调用自定义copy函数对Mcivi进行初始化
+            if (self.Pcivi != 0):
+                self.Pstate = 1
+                print(f"success live in ({self.x},{self.y})")
+                self.Pcivi.print_all()
                 return 1
         print("set civi in Matrix error")
         return 0
@@ -82,8 +82,8 @@ class matrix:
         """
         :return: 返回被释放的客户信息
         """
-        self.Mstate = 0  # 设定该点已搬走【未入住】
-        return self.Mcivi.free()  # 调用自定义释放函数
+        self.Pstate = 0  # 设定该点已搬走【未入住】
+        return self.Pcivi.free()  # 调用自定义释放函数
 
 
 # 注重代码规范
@@ -91,5 +91,5 @@ if __name__ == "__main__":
     civi_test = civi()
     civi_test.init_by_data("lucy", 2, 1)
     civi_test.print_all()
-    matrix_t = matrix(0, 1)
-    matrix_t.set_civi(civi_test)
+    point_t = point(0, 1)
+    point_t.set_civi(civi_test)
