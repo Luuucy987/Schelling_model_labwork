@@ -42,6 +42,11 @@ class point:
             return error
 
 
+class Matrix:
+    def __init__(self):
+        self.matrix = np.array([point(1), point(-1)])
+
+
 # x = np.arange(N)
 # y = np.arange(N)
 # X, Y = np.meshgrid(x, y)
@@ -94,3 +99,6 @@ class point:
 if __name__ == "__main__":
     test_point = point(1)
     print(f"test point lebal is {test_point.label}, happy_rate is {test_point.happy_rate}")
+    matrix_t = Matrix()
+    matrix_t0 = matrix_t.matrix[1]
+    print(f"matrix[1] is {matrix_t0.label}")
