@@ -2,8 +2,11 @@
 import numpy as np
 
 N = 50  # 矩阵大小
-empty_label = 0
-error = 0
+empty_label = 0  # 点阵状态为空的标签
+error = 0  # 错误返回值
+label_n = 2  # n个标签，这里初始化设置为2
+label_weight = {0.5, 0.3, 0.2}  # n个标签的权值列表【int】类型列表，第0个表示 标签为空的权值
+
 import copy
 
 
@@ -44,7 +47,21 @@ class point:
 
 class Matrix:
     def __init__(self):
-        self.matrix = np.array([point(1), point(-1)])
+        self.matrix = np.array([point(1), point(-1)])  # 生成两个点信息到matrix中【示例一维】
+    # 需实现
+    # 1. n*n二维矩阵初始化->通过标签向量初始化 所有点
+
+
+# 实现随机生成N*N大小的一维向量，向量包含所有点的标签信息
+def f(x: int, y: int, _label_n: int, _weight: int):
+    """
+    :param x: 二维矩阵的行数
+    :param y: 二维矩阵的列
+    :param _label_n:n种标签
+    :param _weight:n种标签的n+1个权值列表【包含空。所以是n+1】
+    :return: 返回大小为size的一维标签列表
+    """
+    size = x * y
 
 
 # x = np.arange(N)
@@ -99,6 +116,6 @@ class Matrix:
 if __name__ == "__main__":
     test_point = point(1)
     print(f"test point lebal is {test_point.label}, happy_rate is {test_point.happy_rate}")
-    matrix_t = Matrix()
-    matrix_t0 = matrix_t.matrix[1]
-    print(f"matrix[1] is {matrix_t0.label}")
+    matrix_t = Matrix()  # 构造一个Matrix类
+    matrix_t0 = matrix_t.matrix[1]  # 提取第0个对象【可以自行修改理解】
+    print(f"matrix[1] is {matrix_t0.label}")  # 打印第0个对象的标签值

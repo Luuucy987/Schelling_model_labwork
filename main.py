@@ -17,12 +17,12 @@ n = 3
 
 # 创建一个包含对象实例的二维数组
 custom_objects_array = np.array([
-    [CustomClass(i * n + j) for j in range(n)]  # 内层列表生成式
-    for i in range(n)  # 外层列表生成式
+    [CustomClass(i * n + j) for j in range(n)]  # 内层列表生成式 先生成n次，相当于先实现 CustomClass[n]
+    for i in range(n)  # 外层列表生成式    实现CustomClass[n][n]
 ])
 # 创建一个包含对象实例的一维数组
 custom_objects_array_one = np.array(
-    [CustomClass(n + j) for j in range(n)]  # 内层列表生成式
+    [CustomClass(n + j) for j in range(n)]  # 内层列表生成式 实现 CustomClass[n]
 )
 
 # 打印结果
