@@ -2,5 +2,5 @@
 import class_data
 
 
-def test_fuction(test: class_data.civi):
+def test_fuction(test: class_data.Matrix):
     return 0
