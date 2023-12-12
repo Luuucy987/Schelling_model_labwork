@@ -6,18 +6,18 @@ from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 import os
 
-def plot_grid_label(grid:class_data.Matrix):
+
+def plot_grid_label(grid):
     """
     使用matplotlib生成基于label值的图像
-    :param grid: class_data中matrix类
+    :param grid: class_data中的matrix
     :return: 生成的白、红、蓝的网格图像
     """
     # 将label参数单独生成一个二维矩阵
     labels_only = np.array([[point.label for point in row] for row in grid])
 
-
     # 定义颜色映射
-    colors = ['white','red','blue']
+    colors = ['white', 'red', 'blue']
     cmap = ListedColormap(colors)
 
     # 生成图像
@@ -25,7 +25,8 @@ def plot_grid_label(grid:class_data.Matrix):
     plt.colorbar(ticks=[0, 1, 2])
     plt.show()
 
-def plot_grid_happy_rate(grid:class_data.Matrix,threshold):
+
+def plot_grid_happy_rate(grid, threshold: float):
     """
     使用matplotlib生成基于happy_rate的图像
     :param grid: class_data中的Matrix类
@@ -35,7 +36,6 @@ def plot_grid_happy_rate(grid:class_data.Matrix,threshold):
     # 将happy_rate单独生成二维数组
     happy_rate_only = np.array([[point.happy_rate for point in row] for row in grid])
 
-
     # 定义颜色映射
     # colors = ['purple']
     # cmap = ListedColormap(colors)
@@ -44,11 +44,12 @@ def plot_grid_happy_rate(grid:class_data.Matrix,threshold):
     # 自定义颜色映射
     cmap = LinearSegmentedColormap.from_list('white_to_yellow_to_black', color_list, N=256)
     # 生成图像
-    plt.imshow(happy_rate_only.astype(float), cmap=cmap, interpolation='none',vmin=0,vmax=threshold)
+    plt.imshow(happy_rate_only.astype(float), cmap=cmap, interpolation='none', vmin=0, vmax=threshold)
     plt.colorbar()
     plt.show()
 
-def save_grid_label_image(grid,iteration,save_folder='label_images'):
+
+def save_grid_label_image(grid, iteration, save_folder='label_images'):
     """
     保存label生成的图像
     :param grid: class_data中的Matrix类
@@ -57,10 +58,10 @@ def save_grid_label_image(grid,iteration,save_folder='label_images'):
     :return: 保存的文件夹和文件图片
     """
     # 创建保存文件夹（如果不存在）
-    os.makedirs(save_folder,exist_ok=True)
+    os.makedirs(save_folder, exist_ok=True)
 
     # 构建文件路径
-    file_path = os.path.join(save_folder,f'iteration_{iteration}.png')
+    file_path = os.path.join(save_folder, f'iteration_{iteration}.png')
 
     labels_only = np.array([[point.label for point in row] for row in grid])
     # 定义颜色映射
@@ -75,20 +76,21 @@ def save_grid_label_image(grid,iteration,save_folder='label_images'):
     plt.savefig(file_path)
     plt.close()
 
-def save_grid_happy_rate_image(grid,threshold,iteration,save_folder='happy_rate_images'):
+
+def save_grid_happy_rate_image(grid, threshold: float, iteration: int, save_folder='happy_rate_images'):
     """
     保存基于happy_rate生成的图像
-    :param grid:class_data中的Matrix类
+    :param grid:class_data中的matrix
     :param threshold: happy_rate的阈值
     :param iteration: 迭代次数
     :param save_folder: 保存图片的文件夹名称
     :return: 保存的文件夹和文件图片
     """
     # 创建保存文件夹（如果不存在）
-    os.makedirs(save_folder,exist_ok=True)
+    os.makedirs(save_folder, exist_ok=True)
 
     # 构建文件路径
-    file_path = os.path.join(save_folder,f'iteration_{iteration}.png')
+    file_path = os.path.join(save_folder, f'iteration_{iteration}.png')
 
     happy_rate_only = np.array([[point.happy_rate for point in row] for row in grid])
     color_list = [(1, 1, 1), (1, 1, 0), (0, 0, 0)]
@@ -101,6 +103,7 @@ def save_grid_happy_rate_image(grid,threshold,iteration,save_folder='happy_rate_
     plt.savefig(file_path)
     plt.close()
 
+
 if __name__ == "__main__":
     # 参数设置
     label_list = [0, 1, 2]  # 标签列表
@@ -109,11 +112,11 @@ if __name__ == "__main__":
     label_rand = class_data.random_label(label_n, label_n, _label_list=label_list, _weight=label_weight)
     maxtir_t = class_data.Matrix(label_rand, label_n)
     test_list = list()
-    matrix_res, test_list = class_data.calculate_happy_rate(maxtir_t,label_n,label_n,test_list,0.375)
+    matrix_res, test_list = class_data.calculate_happy_rate(maxtir_t, label_n, label_n, test_list, 0.375)
     print(maxtir_t.matrix[0][0].label)
 
     # 可视化初始状态
     plot_grid_label(maxtir_t.matrix)
-    plot_grid_happy_rate(matrix_res.matrix,0.375)
-    save_grid_label_image(maxtir_t.matrix,1)
-    save_grid_happy_rate_image(matrix_res.matrix,0.375,1)
+    plot_grid_happy_rate(matrix_res.matrix, 0.375)
+    save_grid_label_image(maxtir_t.matrix, 1)
+    save_grid_happy_rate_image(matrix_res.matrix, 0.375, 1)
