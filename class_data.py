@@ -180,6 +180,7 @@ def updata_8_point_happy_rate(input_mp: np.array, x: int, y: int, ori_tuple: tup
     :return: 返回更新完成的二维点矩阵，和输入同理
     """
     ori_x, ori_y = ori_tuple[1] + 1, ori_tuple[0] + 1
+    print(f"update {x},{y}")
     # 尝试移动到指定点
     input_mp[x][y] = input_mp[ori_x][ori_y].point_free()
 
@@ -194,20 +195,32 @@ def updata_8_point_happy_rate(input_mp: np.array, x: int, y: int, ori_tuple: tup
 
             input_mp[x][y].happy_rate = temp_happy_rate
             if (x_temp - 1, y_temp - 1) in un_happy_list and temp_happy_rate > happy_rate_k:
-                un_happy_list.remove((x_temp - 1, y_temp - 1))
+                un_happy_list.remove((x_temp-1,y_temp-1))
                 print(f"un_happy remove point {x_temp - 1},{y_temp - 1}")
-    return input_mp
+    un_happy_list.pop(0)
+    return un_happy_list, input_mp
 
 
 def matrix_move_1point(inpute_M: Matrix, tupel_x_y: tuple, happy_rate_k: float, unhappy_list: list, max_k=100):
+    """
+    :param inpute_M: 输入矩阵类
+    :param tupel_x_y: 原【打算搬家节点信息x，y元组】
+    :param happy_rate_k:  开心值的阈值
+    :param unhappy_list: 不开心的列表
+    :param max_k:最大迭代次数【超过找不到就退出】
+    :return:
+    """
     # 0扩充
-
+    if inpute_M.matrix[tupel_x_y[1],tupel_x_y[0]].happy_rate >= happy_rate_k:
+        print("suit")
+        unhappy_list.pop()
+        return unhappy_list, inpute_M.matrix
     matrix_p = Completion_zero(inpute_M)  # 点矩阵
-    visualization.plot_grid_label(matrix_p)  # -------------------------可视化测试
+    # visualization.plot_grid_label(matrix_p)  # -------------------------可视化测试
     x = tupel_x_y[1] + 1
     y = tupel_x_y[0] + 1
-    print(f"start move point is[{x},{y}]-------------matrix_move_1point")
-    print(f"ori point info [{matrix_p[x][y].label},{matrix_p[x][y].happy_rate}]-------------matrix_move_1point")
+    # print(f"start move point is[{x},{y}]-------------matrix_move_1point")
+    # print(f"ori point info [{matrix_p[x][y].label},{matrix_p[x][y].happy_rate}]-------------matrix_move_1point")
     mod_x = inpute_M.row + 1
     mod_y = inpute_M.col + 1
     ori_label = matrix_p[x][y].label
@@ -223,7 +236,7 @@ def matrix_move_1point(inpute_M: Matrix, tupel_x_y: tuple, happy_rate_k: float, 
         else:
             x += 1
         # 移动开始
-        print(f"{x},{y}:{matrix_p[x][y].label}")
+        # print(f"{x},{y}:{matrix_p[x][y].label}")#移动测试
         if matrix_p[x][y].label == empty_label:  # 如果移动到标签是空的情况下才会做判断
             count_p = 0.0
             for row in range(3):
@@ -238,20 +251,31 @@ def matrix_move_1point(inpute_M: Matrix, tupel_x_y: tuple, happy_rate_k: float, 
                         count_p += 1.0
             happy_rate = count_p / 8.0
             # 计算完当前x,y的开心值了
-            print(f"matrix_input[{x}][{y}] happy rate is :{happy_rate} -------------matrix_move_1point")
+            # print(f"matrix_input[{x}][{y}] happy rate is :{happy_rate} -------------matrix_move_1point")
             if happy_rate > max_pro_happyrate:
-                outOP_x_y = (x, y)
+                outOP_x_y = (x-1,y-1)
             if happy_rate >= happy_rate_k:
-                matrix_p = updata_8_point_happy_rate(matrix_p, x, y, tupel_x_y, happy_rate_k, unhappy_list)
-                visualization.plot_grid_label(matrix_p)  # -------------------------可视化测试
+                unhappy_list, matrix_p = updata_8_point_happy_rate(matrix_p, x, y, tupel_x_y, happy_rate_k,
+                                                                   unhappy_list)
+                # visualization.plot_grid_label(matrix_p)  # -------------------------可视化测试
                 matrix_p = matrix_p[1:-1, 1:-1]
+                print(f"un happy list :\n {unhappy_list}")
                 return unhappy_list, matrix_p
         max_k -= 1
-    updata_8_point_happy_rate(matrix_p, outOP_x_y[0], outOP_x_y[1], tupel_x_y, happy_rate_k, unhappy_list)
-    unhappy_list.append(outOP_x_y)
-    visualization.plot_grid_label(matrix_p)  # -------------------------可视化测试
-    print(f"un happy list :\n{unhappy_list}")
-    return unhappy_list, matrix_p
+    if len(outOP_x_y) != 0:
+        unhappy_list, matrix_p = updata_8_point_happy_rate(matrix_p, outOP_x_y[0], outOP_x_y[1], tupel_x_y, happy_rate_k,
+                                                       unhappy_list)
+        matrix_p = matrix_p[1:-1, 1:-1]
+
+        unhappy_list.append(outOP_x_y)
+        print(f"un happy list :\n {unhappy_list}")
+    # visualization.plot_grid_label(matrix_p)  # -------------------------可视化测试
+        return unhappy_list, matrix_p
+    else:
+        unhappy_list.append(unhappy_list[0])
+        unhappy_list.pop()
+        return unhappy_list, matrix_p
+
 
 
 # 注重代码规范
@@ -259,7 +283,7 @@ if __name__ == "__main__":
     # point 类测试
     # test_point = point(1)
     # print(f"test point lebal is {test_point.label}, happy_rate is {test_point.happy_rate}")
-    plot_iter = 10
+    plot_iter = 3
     label_r = random_label(N, N, label_list, label_weight)
     # print(label_r[0:25])
     # t_np = get_two_dimensional_matrix_class(5, 5, label_r)
@@ -270,4 +294,19 @@ if __name__ == "__main__":
     # calculate_8_happy_rate(matrix_t.matrix, 1, 3) #测试单个点的快乐值
     matrix_res, unhappy_list = calculate_happy_rate(matrix_t, N, N, unhappy_list, 0.375)
 
-    unhappy_list, matrix_res.matrix = matrix_move_1point(matrix_res, unhappy_list[0], 0.375, unhappy_list, 100)
+    judge = 1
+    iter_time = 0
+    visualization.plot_grid_label(matrix_res.matrix)
+    visualization.plot_grid_happy_rate(matrix_res.matrix, 0.375)
+    while( judge ):
+        print(f"--------------------------------------------------{iter_time}")
+        unhappy_list, matrix_res.matrix = matrix_move_1point(matrix_res, unhappy_list[0], 0.375, unhappy_list, 100)
+        iter_time += 1
+        if len(unhappy_list) == 0 or iter_time > 100:
+            judge = 0
+        if iter_time % plot_iter == 0:
+            matrix_res, unhappy_list = calculate_happy_rate(matrix_t, N, N, unhappy_list, 0.375)
+            unhappy_list = list(set(unhappy_list))
+            print(unhappy_list)
+            visualization.plot_grid_label(matrix_res.matrix)
+            visualization.plot_grid_happy_rate(matrix_res.matrix,0.375)
