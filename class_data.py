@@ -2,7 +2,7 @@
 import numpy as np
 import visualization
 
-N = 5  # 矩阵大小
+N = 10  # 矩阵大小
 empty_label = 0  # 点阵状态为空的标签
 error = 0  # 错误返回值
 label_n = 3  # n个标签，这里初始化设置为3
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     # point 类测试
     # test_point = point(1)
     # print(f"test point lebal is {test_point.label}, happy_rate is {test_point.happy_rate}")
-    plot_iter = 3
+
     label_r = random_label(N, N, label_list, label_weight)
     # print(label_r[0:25])
     # t_np = get_two_dimensional_matrix_class(5, 5, label_r)
@@ -301,20 +301,19 @@ if __name__ == "__main__":
     matrix_t = Matrix(label_r, N)
     # calculate_8_happy_rate(matrix_t.matrix, 1, 3) #测试单个点的快乐值
     matrix_res, unhappy_list = calculate_happy_rate(matrix_t, N, N, unhappy_list, 0.375)
-
+    plot_iter = 5#多少次输出画面
     judge = 1
     iter_time = 0
     # visualization.plot_grid_label(matrix_res.matrix)
     # visualization.plot_grid_happy_rate(matrix_res.matrix, 0.375)
     while( judge ):
         print(f"--------------------------------------------------{iter_time}")
-        unhappy_list, matrix_res.matrix = matrix_move_1point(matrix_res, unhappy_list[0], 0.375, unhappy_list)
+        unhappy_list, matrix_res.matrix = matrix_move_1point(matrix_res, unhappy_list[0], 0.375, unhappy_list)#看方法的注释，后面能添加单次迭代次数
         iter_time += 1
-        if len(unhappy_list) == 0 or iter_time > 100:
+        if len(unhappy_list) == 0 or iter_time > 100:   #设置最大迭代次数
             break
         if iter_time % plot_iter == 0:
             unhappy_list = list()
             matrix_res, unhappy_list = calculate_happy_rate(matrix_t, N, N, unhappy_list, 0.375)
-        #     print(unhappy_list)
             visualization.plot_grid_label(matrix_res.matrix)
             visualization.plot_grid_happy_rate(matrix_res.matrix,0.375)
